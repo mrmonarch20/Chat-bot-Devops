@@ -1,0 +1,41 @@
+
+version: '3.8'
+services:
+  chat-service:
+    build: ./services/chat-service
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./services/chat-service/.env
+
+  user-service:
+    build: ./services/user-service
+    ports:
+      - "5001:5001"
+
+  message-store:
+    build: ./services/message-store
+    ports:
+      - "5002:5002"
+
+  analytics-service:
+    build: ./services/analytics-service
+    ports:
+      - "5003:5003"
+
+  api-gateway:
+    build: ./services/api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - chat-service
+      - user-service
+      - message-store
+      - analytics-service
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
